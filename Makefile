@@ -74,7 +74,7 @@ CXXFLAGS_RELEASE := \
 	-O3 \
 	-march=native
 
-LDFLAGS_DEBUG   := $(SANITIZERS)
+LDFLAGS_DEBUG   := $(LIBS) $(SANITIZERS)
 LDFLAGS_RELEASE := $(LIBS)
 
 # =========================
@@ -84,7 +84,7 @@ BUILD ?= release
 
 ifeq ($(BUILD),debug)
 	CXXFLAGS := $(CXXFLAGS_COMMON) $(CXXFLAGS_DEBUG)
-	LDFLAGS  := $(LIBS) $(LDFLAGS_DEBUG)
+	LDFLAGS  := $(LDFLAGS_DEBUG)
 else
 	CXXFLAGS := $(CXXFLAGS_COMMON) $(CXXFLAGS_RELEASE)
 	LDFLAGS  := $(LDFLAGS_RELEASE)
@@ -123,7 +123,11 @@ snapshot: $(OBJ_ENGINE) $(OBJ_SNAPSHOT)
 
 # -------------------------
 # Perf test
+#   - ENGINE_PERF_MODE disables invariant/abort paths in hot code.
+#   - Build release for perf numbers: `make perf` (default BUILD=release)
+#   - If you want perf + sanitizers: `make perf BUILD=debug`
 # -------------------------
+perf: CXXFLAGS += -DENGINE_PERF_MODE
 perf: $(OBJ_ENGINE) $(OBJ_PERF)
 	$(LD) $^ $(LDFLAGS) -o $(TARGET_PERF)
 

@@ -1,8 +1,8 @@
 #pragma once
 #include <cstdint>
+#include <cstring>  // <-- add this
 #include "orders.h"
 #include "order_book.h"
-
 
 
 constexpr uint32_t MAX_ACCOUNTS = 1'000'000;
